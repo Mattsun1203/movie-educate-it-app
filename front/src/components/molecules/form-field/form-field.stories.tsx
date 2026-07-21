@@ -43,7 +43,11 @@ export const RegisterForm: Story = {
   },
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-      <FormField id="email-2" label="メールアドレス" inputProps={{ placeholder: "you@example.com" }} />
+      <FormField
+        id="email-2"
+        label="メールアドレス"
+        inputProps={{ placeholder: "you@example.com" }}
+      />
       <FormField
         id="password-2"
         label="パスワード"

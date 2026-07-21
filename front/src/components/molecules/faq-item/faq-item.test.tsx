@@ -11,9 +11,13 @@ describe("FaqItem", () => {
       />,
     );
 
-    expect(screen.getByText("Q. 無料で見られる範囲はどこまでですか？")).toBeInTheDocument();
     expect(
-      screen.getByText("A. 各講座のサンプル動画と一部の基礎講座は無料でご覧いただけます。"),
+      screen.getByText("Q. 無料で見られる範囲はどこまでですか？"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "A. 各講座のサンプル動画と一部の基礎講座は無料でご覧いただけます。",
+      ),
     ).toBeInTheDocument();
   });
 });

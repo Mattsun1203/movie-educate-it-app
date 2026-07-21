@@ -1,8 +1,17 @@
 import Link from "next/link";
-import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from "react";
+import type {
+  AnchorHTMLAttributes,
+  ButtonHTMLAttributes,
+  ReactNode,
+} from "react";
 import { cn } from "@/lib/cn";
 
-export type ButtonVariant = "primary" | "secondary" | "ghost" | "invert" | "onDark";
+export type ButtonVariant =
+  | "primary"
+  | "secondary"
+  | "ghost"
+  | "invert"
+  | "onDark";
 export type ButtonSize = "sm" | "md";
 
 interface ButtonOwnProps {
@@ -14,11 +23,17 @@ interface ButtonOwnProps {
 
 type ButtonAsButton = ButtonOwnProps & {
   href?: undefined;
-} & Omit<ButtonHTMLAttributes<HTMLButtonElement>, keyof ButtonOwnProps | "href">;
+} & Omit<
+    ButtonHTMLAttributes<HTMLButtonElement>,
+    keyof ButtonOwnProps | "href"
+  >;
 
 type ButtonAsLink = ButtonOwnProps & {
   href: string;
-} & Omit<AnchorHTMLAttributes<HTMLAnchorElement>, keyof ButtonOwnProps | "href">;
+} & Omit<
+    AnchorHTMLAttributes<HTMLAnchorElement>,
+    keyof ButtonOwnProps | "href"
+  >;
 
 export type ButtonProps = ButtonAsButton | ButtonAsLink;
 
@@ -27,10 +42,12 @@ const baseStyles =
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary: "bg-indigo-600 text-white hover:bg-indigo-700",
-  secondary: "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50",
+  secondary:
+    "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50",
   ghost: "text-slate-700 hover:text-indigo-700",
   invert: "bg-white text-indigo-700 hover:bg-slate-50",
-  onDark: "border border-slate-700 bg-white/10 text-slate-100 hover:bg-white/15",
+  onDark:
+    "border border-slate-700 bg-white/10 text-slate-100 hover:bg-white/15",
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
@@ -38,19 +55,38 @@ const sizeStyles: Record<ButtonSize, string> = {
   sm: "px-4 py-2.5 text-sm",
 };
 
-export function Button({ variant = "primary", size = "md", className, children, href, ...rest }: ButtonProps) {
-  const classes = cn(baseStyles, variantStyles[variant], sizeStyles[size], className);
+export function Button({
+  variant = "primary",
+  size = "md",
+  className,
+  children,
+  href,
+  ...rest
+}: ButtonProps) {
+  const classes = cn(
+    baseStyles,
+    variantStyles[variant],
+    sizeStyles[size],
+    className,
+  );
 
   if (href) {
     return (
-      <Link href={href} className={classes} {...(rest as Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href">)}>
+      <Link
+        href={href}
+        className={classes}
+        {...(rest as Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href">)}
+      >
         {children}
       </Link>
     );
   }
 
   return (
-    <button className={classes} {...(rest as ButtonHTMLAttributes<HTMLButtonElement>)}>
+    <button
+      className={classes}
+      {...(rest as ButtonHTMLAttributes<HTMLButtonElement>)}
+    >
       {children}
     </button>
   );

@@ -8,10 +8,17 @@ export interface TestimonialCardProps {
   className?: string;
 }
 
-export function TestimonialCard({ quote, name, role, className }: TestimonialCardProps) {
+export function TestimonialCard({
+  quote,
+  name,
+  role,
+  className,
+}: TestimonialCardProps) {
   return (
     <div className={cn("rounded-2xl border border-slate-200 p-6", className)}>
-      <p className="mb-4 text-sm leading-relaxed text-slate-700">&ldquo;{quote}&rdquo;</p>
+      <p className="mb-4 text-sm leading-relaxed text-slate-700">
+        &ldquo;{quote}&rdquo;
+      </p>
       <div className="flex items-center gap-2.5">
         <Avatar initials={name.slice(0, 1)} size="sm" />
         <div>

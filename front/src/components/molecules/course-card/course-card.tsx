@@ -59,12 +59,18 @@ export function CourseCard({
           <Badge variant={levelVariant[level]}>{level}</Badge>
           <span className="text-xs text-slate-400">{duration}</span>
         </div>
-        <h3 className="mb-1.5 text-sm font-bold leading-snug text-slate-900">{title}</h3>
-        <p className="mb-3 text-xs leading-relaxed text-slate-500">{description}</p>
+        <h3 className="mb-1.5 text-sm font-bold leading-snug text-slate-900">
+          {title}
+        </h3>
+        <p className="mb-3 text-xs leading-relaxed text-slate-500">
+          {description}
+        </p>
         {typeof progress === "number" ? (
           <>
             <ProgressBar value={progress} />
-            <div className="mt-1.5 text-xs text-slate-400">受講進捗 {progress}%</div>
+            <div className="mt-1.5 text-xs text-slate-400">
+              受講進捗 {progress}%
+            </div>
           </>
         ) : null}
       </div>

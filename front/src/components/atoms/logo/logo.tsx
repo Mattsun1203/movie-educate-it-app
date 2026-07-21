@@ -10,7 +10,9 @@ export function Logo({ className }: LogoProps) {
       <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600">
         <span className="font-heading text-base font-bold text-white">C</span>
       </span>
-      <span className="font-heading text-lg font-bold text-slate-900">CodeStep</span>
+      <span className="font-heading text-lg font-bold text-slate-900">
+        CodeStep
+      </span>
     </span>
   );
 }

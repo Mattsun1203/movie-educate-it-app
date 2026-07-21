@@ -14,9 +14,16 @@ describe("CourseCard", () => {
       />,
     );
 
-    expect(screen.getByRole("link")).toHaveAttribute("href", "/courses/react-practice");
-    expect(screen.getByText("React実践開発 コンポーネント設計")).toBeInTheDocument();
-    expect(screen.getByText("状態管理・API連携まで実務水準で構築する。")).toBeInTheDocument();
+    expect(screen.getByRole("link")).toHaveAttribute(
+      "href",
+      "/courses/react-practice",
+    );
+    expect(
+      screen.getByText("React実践開発 コンポーネント設計"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("状態管理・API連携まで実務水準で構築する。"),
+    ).toBeInTheDocument();
     expect(screen.getByText("実務")).toBeInTheDocument();
     expect(screen.getByText("全20回")).toBeInTheDocument();
   });
@@ -63,7 +70,10 @@ describe("CourseCard", () => {
     );
 
     expect(screen.getByText("受講進捗 40%")).toBeInTheDocument();
-    expect(screen.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "40");
+    expect(screen.getByRole("progressbar")).toHaveAttribute(
+      "aria-valuenow",
+      "40",
+    );
   });
 
   it("progress未指定の場合は進捗バーを表示しない", () => {

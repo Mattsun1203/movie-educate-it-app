@@ -2,12 +2,18 @@ import Link from "next/link";
 import type { ComponentPropsWithoutRef } from "react";
 import { cn } from "@/lib/cn";
 
-export interface NavLinkProps extends Omit<ComponentPropsWithoutRef<typeof Link>, "className"> {
+export interface NavLinkProps
+  extends Omit<ComponentPropsWithoutRef<typeof Link>, "className"> {
   isActive?: boolean;
   className?: string;
 }
 
-export function NavLink({ isActive = false, className, children, ...props }: NavLinkProps) {
+export function NavLink({
+  isActive = false,
+  className,
+  children,
+  ...props
+}: NavLinkProps) {
   return (
     <Link
       aria-current={isActive ? "page" : undefined}

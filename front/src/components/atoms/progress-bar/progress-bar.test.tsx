@@ -13,11 +13,17 @@ describe("ProgressBar", () => {
 
   it("100を超える値は100に丸められる", () => {
     render(<ProgressBar value={150} />);
-    expect(screen.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "100");
+    expect(screen.getByRole("progressbar")).toHaveAttribute(
+      "aria-valuenow",
+      "100",
+    );
   });
 
   it("0未満の値は0に丸められる", () => {
     render(<ProgressBar value={-20} />);
-    expect(screen.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "0");
+    expect(screen.getByRole("progressbar")).toHaveAttribute(
+      "aria-valuenow",
+      "0",
+    );
   });
 });

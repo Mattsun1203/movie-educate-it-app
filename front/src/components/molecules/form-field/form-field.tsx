@@ -11,7 +11,13 @@ export interface FormFieldProps {
   inputProps?: Omit<InputProps, "id">;
 }
 
-export function FormField({ id, label, helperText, className, inputProps }: FormFieldProps) {
+export function FormField({
+  id,
+  label,
+  helperText,
+  className,
+  inputProps,
+}: FormFieldProps) {
   const helperId = helperText ? `${id}-helper` : undefined;
 
   return (

@@ -1,7 +1,13 @@
 import type { ComponentPropsWithoutRef } from "react";
 import { cn } from "@/lib/cn";
 
-export type BadgeVariant = "basic" | "practice" | "advanced" | "success" | "neutral" | "onDark";
+export type BadgeVariant =
+  | "basic"
+  | "practice"
+  | "advanced"
+  | "success"
+  | "neutral"
+  | "onDark";
 
 const variantStyles: Record<BadgeVariant, string> = {
   basic: "bg-green-100 text-green-800",
@@ -16,7 +22,12 @@ export interface BadgeProps extends ComponentPropsWithoutRef<"span"> {
   variant?: BadgeVariant;
 }
 
-export function Badge({ variant = "neutral", className, children, ...props }: BadgeProps) {
+export function Badge({
+  variant = "neutral",
+  className,
+  children,
+  ...props
+}: BadgeProps) {
   return (
     <span
       className={cn(

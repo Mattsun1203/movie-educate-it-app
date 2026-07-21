@@ -20,7 +20,9 @@ describe("FormField", () => {
   });
 
   it("helperTextを渡すと補足文が表示され、入力欄と関連付けられる", () => {
-    render(<FormField id="password" label="パスワード" helperText="8文字以上" />);
+    render(
+      <FormField id="password" label="パスワード" helperText="8文字以上" />,
+    );
 
     const input = screen.getByLabelText("パスワード");
     const helper = screen.getByText("8文字以上");
@@ -31,9 +33,16 @@ describe("FormField", () => {
 
   it("inputPropsで入力欄の属性を上書きできる", () => {
     render(
-      <FormField id="password" label="パスワード" inputProps={{ type: "password", placeholder: "8文字以上" }} />,
+      <FormField
+        id="password"
+        label="パスワード"
+        inputProps={{ type: "password", placeholder: "8文字以上" }}
+      />,
     );
 
-    expect(screen.getByPlaceholderText("8文字以上")).toHaveAttribute("type", "password");
+    expect(screen.getByPlaceholderText("8文字以上")).toHaveAttribute(
+      "type",
+      "password",
+    );
   });
 });

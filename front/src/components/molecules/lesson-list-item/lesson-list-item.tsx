@@ -21,7 +21,12 @@ export interface LessonListItemProps {
   className?: string;
 }
 
-export function LessonListItem({ title, duration, status, className }: LessonListItemProps) {
+export function LessonListItem({
+  title,
+  duration,
+  status,
+  className,
+}: LessonListItemProps) {
   const isCurrent = status === "current";
 
   return (
@@ -32,7 +37,10 @@ export function LessonListItem({ title, duration, status, className }: LessonLis
         className,
       )}
     >
-      <span className="w-5 text-center text-xs text-indigo-400" aria-label={statusLabel[status]}>
+      <span
+        className="w-5 text-center text-xs text-indigo-400"
+        aria-label={statusLabel[status]}
+      >
         {statusIcon[status]}
       </span>
       <span

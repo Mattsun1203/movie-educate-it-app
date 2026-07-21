@@ -13,7 +13,12 @@ export interface AvatarProps extends ComponentPropsWithoutRef<"span"> {
   size?: AvatarSize;
 }
 
-export function Avatar({ initials, size = "md", className, ...props }: AvatarProps) {
+export function Avatar({
+  initials,
+  size = "md",
+  className,
+  ...props
+}: AvatarProps) {
   return (
     <span
       className={cn(

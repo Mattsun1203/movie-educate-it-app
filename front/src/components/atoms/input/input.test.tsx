@@ -23,6 +23,9 @@ describe("Input", () => {
 
   it("type属性を指定できる", () => {
     render(<Input type="password" placeholder="8文字以上" />);
-    expect(screen.getByPlaceholderText("8文字以上")).toHaveAttribute("type", "password");
+    expect(screen.getByPlaceholderText("8文字以上")).toHaveAttribute(
+      "type",
+      "password",
+    );
   });
 });

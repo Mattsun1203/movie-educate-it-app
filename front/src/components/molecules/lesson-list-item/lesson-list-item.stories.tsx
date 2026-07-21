@@ -15,7 +15,14 @@ const meta = {
   },
   decorators: [
     (StoryFn) => (
-      <div style={{ width: 320, background: "#1E293B", padding: 16, borderRadius: 12 }}>
+      <div
+        style={{
+          width: 320,
+          background: "#1E293B",
+          padding: 16,
+          borderRadius: 12,
+        }}
+      >
         <StoryFn />
       </div>
     ),
@@ -57,12 +64,36 @@ export const LessonList: Story = {
   },
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-      <LessonListItem title="イントロダクションと環境構築" duration="8分" status="completed" />
-      <LessonListItem title="コンポーネント設計の基本方針" duration="9分" status="completed" />
-      <LessonListItem title="状態管理とデータフロー — Reduxの導入" duration="10分" status="current" />
-      <LessonListItem title="API連携と非同期処理" duration="11分" status="upcoming" />
-      <LessonListItem title="フォームとバリデーション" duration="12分" status="upcoming" />
-      <LessonListItem title="テストとデプロイの基本" duration="13分" status="upcoming" />
+      <LessonListItem
+        title="イントロダクションと環境構築"
+        duration="8分"
+        status="completed"
+      />
+      <LessonListItem
+        title="コンポーネント設計の基本方針"
+        duration="9分"
+        status="completed"
+      />
+      <LessonListItem
+        title="状態管理とデータフロー — Reduxの導入"
+        duration="10分"
+        status="current"
+      />
+      <LessonListItem
+        title="API連携と非同期処理"
+        duration="11分"
+        status="upcoming"
+      />
+      <LessonListItem
+        title="フォームとバリデーション"
+        duration="12分"
+        status="upcoming"
+      />
+      <LessonListItem
+        title="テストとデプロイの基本"
+        duration="13分"
+        status="upcoming"
+      />
     </div>
   ),
 };

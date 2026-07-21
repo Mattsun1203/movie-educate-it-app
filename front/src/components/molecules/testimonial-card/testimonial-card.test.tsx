@@ -13,14 +13,23 @@ describe("TestimonialCard", () => {
     );
 
     expect(
-      screen.getByText("未経験でしたが、順番通りに進めるだけで理解できました。", { exact: false }),
+      screen.getByText(
+        "未経験でしたが、順番通りに進めるだけで理解できました。",
+        { exact: false },
+      ),
     ).toBeInTheDocument();
     expect(screen.getByText("佐藤 様")).toBeInTheDocument();
     expect(screen.getByText("Web制作会社 勤務")).toBeInTheDocument();
   });
 
   it("氏名の頭文字をアバターのイニシャルとして表示する", () => {
-    render(<TestimonialCard quote="実務講座が役立っています。" name="鈴木 様" role="営業職から転職" />);
+    render(
+      <TestimonialCard
+        quote="実務講座が役立っています。"
+        name="鈴木 様"
+        role="営業職から転職"
+      />,
+    );
     expect(screen.getByText("鈴")).toBeInTheDocument();
   });
 });
