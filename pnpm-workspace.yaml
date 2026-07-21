@@ -1,3 +1,7 @@
+packages:
+  - "front"
+  - "back"
+
 allowBuilds:
   sharp: true
   unrs-resolver: true

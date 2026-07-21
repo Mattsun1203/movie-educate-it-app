@@ -6,7 +6,9 @@ settings:
 
 importers:
 
-  .:
+  .: {}
+
+  front:
     dependencies:
       next:
         specifier: 16.2.0
