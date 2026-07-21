@@ -17,5 +17,4 @@ minimumReleaseAgeExclude:
   - '@storybook/react-dom-shim@10.5.3'
   - '@storybook/react-vite@10.5.3'
   - '@storybook/react@10.5.3'
-  - eslint-plugin-storybook@10.5.3
   - storybook@10.5.3

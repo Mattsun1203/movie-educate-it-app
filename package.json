@@ -1,5 +1,14 @@
 {
   "name": "movie-educate-it-app",
   "private": true,
-  "packageManager": "pnpm@11.15.1"
+  "packageManager": "pnpm@11.15.1",
+  "scripts": {
+    "lint": "biome lint .",
+    "format": "biome format --write .",
+    "format:check": "biome format .",
+    "check": "biome check ."
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.4"
+  }
 }
