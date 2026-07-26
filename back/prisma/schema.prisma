@@ -1,0 +1,77 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum CourseLevel {
+  BASIC
+  PRACTICE
+  ADVANCED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  lessonProgress LessonProgress[]
+
+  @@map("users")
+}
+
+model Course {
+  id            String      @id @default(cuid())
+  slug          String      @unique
+  title         String
+  description   String
+  level         CourseLevel
+  durationLabel String
+  isFree        Boolean     @default(false)
+  thumbnailUrl  String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  lessons Lesson[]
+
+  @@map("courses")
+}
+
+model Lesson {
+  id            String   @id @default(cuid())
+  courseId      String
+  title         String
+  durationLabel String
+  order         Int
+  videoUrl      String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  course         Course           @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessonProgress LessonProgress[]
+
+  @@unique([courseId, order])
+  @@map("lessons")
+}
+
+model LessonProgress {
+  id          String    @id @default(cuid())
+  userId      String
+  lessonId    String
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonId])
+  @@map("lesson_progress")
+}
