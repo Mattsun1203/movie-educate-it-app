@@ -43,6 +43,25 @@ pnpm db:studio        # prisma studio
 
 Prisma 7の新クライアントはWASMクエリコンパイラを動的importで読み込むため、`test:e2e`は`node --experimental-vm-modules node_modules/jest/bin/jest.js --config ./test/jest-e2e.json`という形で実行している（通常の`jest`コマンドのままだと`A dynamic import callback was invoked without --experimental-vm-modules`で失敗する）。同じ理由で、`test/jest-e2e.json`と`package.json`のjest設定（ユニットテスト用）の両方に、生成コードの`.js`拡張子importをJestが解決できるようにする`moduleNameMapper`（`^(\\.{1,2}/.*)\\.js$`）を追加している。
 
+### ロギング
+
+`nestjs-pino`（pinoベース）を使用しており、独自の`LoggerService`実装や自前のHTTPロギング用インターセプターは書いていない。設定は`src/logger/logger.config.ts`に集約している。
+
+- `main.ts`で`NestFactory.create(AppModule, { bufferLogs: true })` + `app.useLogger(app.get(Logger))`（`nestjs-pino`の`Logger`）を行っており、Nest自身の起動ログも含めて全てpino経由で統一フォーマットになる。
+- **HTTPアクセスログは自動記録される。** `pino-http`のautoLoggingにより、リクエストごとに1行（メソッド・パス・ステータス・応答時間・`reqId`）がレスポンス確定時に出力される。独自のインターセプターは不要。
+- **ログレベル**: `fatal`/`error`/`warn`/`info`/`debug`の5段階（`trace`は使わない方針）。`LOG_LEVEL`環境変数（`.env`参照）で明示的にしきい値を指定できるが、未設定時は`NODE_ENV`に応じて自動で決まる: `development`（未設定時のデフォルト）→`debug`、`production`→`info`、`test`→`silent`（Jest実行時にアクセスログでテスト出力が汚れないようにするため）。
+- アクセスログ自体のレベルは`customLogLevel`でステータスコードに応じて自動判定される: 5xx→`error`、4xx→`warn`、それ以外→`info`。
+- **フォーマット**: `NODE_ENV === "development"`のときだけ`pino-pretty`で人間可読な整形ログに変換する。それ以外（`test`/`production`）はプレーンなJSON出力にしている。`pino-pretty`はworker threadを使うため、Jest実行時（`test`）に有効化するとハングの原因になりうる点に注意。
+- **ログローテーションは実装していない。** `back/`はアプリ自体をまだコンテナ化・デプロイしておらず（`docker-compose.yml`はDBのみ）、標準出力オンリー設計のため。将来コンテナ化・デプロイする際は、Dockerのlog-opts（`max-size`/`max-file`）やホスティング先のログ管理機能に委ねる想定。
+
+#### ログを書く際の必須ルール
+
+1. **どのレイヤー・クラスから出たログかを必ず明示する。** ログを出す全てのクラス（Controller/Service/Filter問わず）は、コンストラクタで`@InjectPinoLogger(ClassName.name)`を使って`PinoLogger`を注入し、そのクラス名を`context`として自動付与させる（`AppController`/`AppService`/`PrismaService`が実例）。汎用の`console.log`や`context`未指定のロガーは使わない。
+2. **メタ情報はメッセージ文字列に埋め込まず、必ずオブジェクトの構造化フィールドとして渡す。** `logger.info(\`user ${id} did X\`)`のような文字列連結は禁止。`logger.info({ userId, action: "X" }, "固定の説明文")`のように、第1引数のオブジェクトにキー・バリューとして渡す（メッセージは固定文言にし、検索・集計は構造化フィールド側で行う）。
+3. **エラーは発生箇所ごとに個別ログを残さず、1エラーにつき1ログに一本化する。** 各層で`catch`して単純に再throwする場合はそこでログを出さない（同じエラーが何行にもわたって重複記録されるのを防ぐため）。エラーの記録は`src/common/filters/all-exceptions.filter.ts`（`APP_FILTER`としてグローバル登録）に集約しており、`err`（スタックトレース込み）・`statusCode`・`errorType`（例外クラス名）を構造化フィールドとして必ず付与する。`reqId`やリクエスト内容は、AsyncLocalStorageベースの`PinoLogger`がリクエストコンテキストから自動的に引き継ぐため、フィルター側で手動で詰め直す必要はない。
+4. **ユーザーの行動を追えるよう、認証済みリクエストのログには必ず`userId`を含める。** 認証ガード/ミドルウェア実装時は、リクエストの早い段階で`PinoLogger.assign({ userId })`を呼ぶ（もしくは`req.user.id`をセットしておけば`logger.config.ts`の`customProps`が自動的に拾う）。一度`assign`すれば、以降そのリクエスト内で発生する全ての層のログ（アクセスログ含む）に`userId`が自動的に乗るため、各ログ呼び出しで毎回`userId`を手動指定する必要はない。
+
 ### Biomeとの既知の衝突
 
-Biomeの`useImportType`ルールは、NestJSがコンストラクタ引数の型からDI用メタデータを生成する仕組み（`emitDecoratorMetadata`）と衝突する。DI対象のクラスをtype-onlyインポート（`import type { Foo } from "./foo"`）にすると実行時の型情報が失われ、`UnknownDependenciesException`でアプリの起動に失敗する。このためリポジトリルートの`biome.json`で`back/src/**`に限り`useImportType`を無効化している。コンストラクタでDIするクラスは常に通常のインポートで書くこと。
+- Biomeの`useImportType`ルールは、NestJSがコンストラクタ引数の型からDI用メタデータを生成する仕組み（`emitDecoratorMetadata`）と衝突する。DI対象のクラスをtype-onlyインポート（`import type { Foo } from "./foo"`）にすると実行時の型情報が失われ、`UnknownDependenciesException`でアプリの起動に失敗する。このためリポジトリルートの`biome.json`で`back/src/**`に限り`useImportType`を無効化している。コンストラクタでDIするクラスは常に通常のインポートで書くこと。
+- Biomeの標準パーサーは既定でパラメータデコレータ（`constructor(@InjectPinoLogger(Foo.name) private readonly logger: PinoLogger)`のような書き方）を解釈できずパースエラーになる。このため`biome.json`の`back/src/**`向けoverrideで`javascript.parser.unsafeParameterDecoratorsEnabled: true`を設定している。
