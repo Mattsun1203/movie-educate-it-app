@@ -44,10 +44,6 @@
       "Write(**/secrets/**)",
       "Bash(wget:*)"
     ],
-    "ask": [
-      "Bash(git push:*)",
-      "Bash(git commit:*)",
-      "Bash(git reset:*)"
-    ]
+    "ask": ["Bash(git push:*)", "Bash(git commit:*)", "Bash(git reset:*)"]
   }
 }
