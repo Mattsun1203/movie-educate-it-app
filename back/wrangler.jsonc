@@ -1,0 +1,19 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "codestep-back",
+  "main": "src/app.ts",
+  "compatibility_date": "2026-08-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "hyperdrive": [
+    {
+      "binding": "HYPERDRIVE",
+      // `wrangler hyperdrive create <name> --connection-string="<Neonの接続文字列>"` の出力idに置き換える
+      "id": "REPLACE_WITH_HYPERDRIVE_ID",
+      // ダミーのプレースホルダー。DBに触れないローカルテスト（pnpm test）が
+      // 追加設定なしで起動できるようにするための既定値で、実際に接続はしない。
+      // ローカル開発（wrangler dev）やCIでは.dev.vars／環境変数の
+      // CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_HYPERDRIVEがこれより優先される。
+      "localConnectionString": "postgresql://placeholder:placeholder@localhost:5432/placeholder"
+    }
+  ]
+}

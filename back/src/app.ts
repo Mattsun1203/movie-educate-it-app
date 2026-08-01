@@ -2,7 +2,14 @@ import { Hono } from "hono";
 import { errorHandler } from "./common/error-handler.js";
 import { type LoggerVariables, loggerMiddleware } from "./logger/middleware.js";
 
-const app = new Hono<{ Variables: LoggerVariables }>().basePath("/api");
+export type Bindings = {
+  HYPERDRIVE: Hyperdrive;
+};
+
+const app = new Hono<{
+  Bindings: Bindings;
+  Variables: LoggerVariables;
+}>().basePath("/api");
 
 app.use("*", loggerMiddleware);
 app.onError(errorHandler);

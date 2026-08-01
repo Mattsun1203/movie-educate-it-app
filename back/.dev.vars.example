@@ -1,0 +1,3 @@
+# wrangler devがローカル実行時にHyperdrive経由の接続として使う接続文字列。
+# ローカル開発はdocker-compose.ymlのPostgreSQL（`docker compose up -d`）を向ける。
+CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_HYPERDRIVE="postgresql://codestep:codestep@localhost:5434/codestep"

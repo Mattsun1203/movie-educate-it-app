@@ -24,6 +24,7 @@
   "devDependencies": {
     "back": "workspace:*",
     "@chromatic-com/storybook": "^5.2.1",
+    "@cloudflare/workers-types": "^5.20260801.1",
     "@playwright/test": "^1.61.1",
     "@storybook/addon-a11y": "^10.5.3",
     "@storybook/addon-docs": "^10.5.3",

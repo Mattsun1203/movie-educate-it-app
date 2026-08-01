@@ -1,0 +1,57 @@
+name: back test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: back-test-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: jdx/mise-action@v2
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma Client
+        working-directory: back
+        run: pnpm exec prisma generate
+
+      # developブランチから、このCI実行専用の使い捨てNeonブランチを作成する。
+      # コピーオンライトなのでdevelopの実データを一瞬で複製できる。
+      - name: Create Neon branch
+        id: neon-branch
+        uses: neondatabase/create-branch-action@v6
+        with:
+          project_id: ${{ vars.NEON_PROJECT_ID }}
+          parent_branch: develop
+          branch_name: ci-${{ github.run_id }}
+          api_key: ${{ secrets.NEON_API_KEY }}
+
+      - name: Apply migrations to the branch
+        working-directory: back
+        env:
+          DATABASE_URL: ${{ steps.neon-branch.outputs.db_url }}
+        run: pnpm exec prisma migrate deploy
+
+      - name: Run tests
+        working-directory: back
+        env:
+          CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_HYPERDRIVE: ${{ steps.neon-branch.outputs.db_url }}
+        run: pnpm test
+
+      # 成功・失敗にかかわらず必ず使い捨てブランチを削除する。
+      - name: Delete Neon branch
+        if: always()
+        uses: neondatabase/delete-branch-action@v3
+        with:
+          project_id: ${{ vars.NEON_PROJECT_ID }}
+          branch: ci-${{ github.run_id }}
+          api_key: ${{ secrets.NEON_API_KEY }}
