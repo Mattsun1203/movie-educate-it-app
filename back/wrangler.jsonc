@@ -7,7 +7,7 @@
   "hyperdrive": [
     {
       "binding": "HYPERDRIVE",
-      // `wrangler hyperdrive create <name> --connection-string="<Neonの接続文字列>"` の出力idに置き換える
+      // `wrangler hyperdrive create <name> --connection-string="<Neon mainブランチの接続文字列>"` の出力idに置き換える
       "id": "REPLACE_WITH_HYPERDRIVE_ID",
       // ダミーのプレースホルダー。DBに触れないローカルテスト（pnpm test）が
       // 追加設定なしで起動できるようにするための既定値で、実際に接続はしない。
@@ -15,5 +15,19 @@
       // CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_HYPERDRIVEがこれより優先される。
       "localConnectionString": "postgresql://placeholder:placeholder@localhost:5432/placeholder"
     }
-  ]
+  ],
+  "env": {
+    // developブランチへのpushで自動デプロイされるステージング環境。
+    // nameを省略しwranglerの既定命名（codestep-back-develop）に任せる。
+    // hyperdriveはenv間で継承されないため個別に指定する必要がある。
+    "develop": {
+      "hyperdrive": [
+        {
+          "binding": "HYPERDRIVE",
+          // `wrangler hyperdrive create <name> --connection-string="<Neon developブランチの接続文字列>"` の出力idに置き換える
+          "id": "REPLACE_WITH_HYPERDRIVE_ID_DEVELOP"
+        }
+      ]
+    }
+  }
 }

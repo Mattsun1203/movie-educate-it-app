@@ -26,11 +26,13 @@ pnpm db:studio         # prisma studio
 このリポジトリのコードだけでは完結しない、Cloudflare/Neonアカウントに紐づく手動作業。
 
 1. `wrangler login`（ブラウザ認証）
-2. `wrangler hyperdrive create <name> --connection-string="<Neonの本番用接続文字列>"`を実行し、出力された`id`を`wrangler.jsonc`の`hyperdrive[0].id`に設定する
-3. `docker compose up -d`でローカルPostgreSQLを起動し、`.env.example`を`.env`にコピーする（`DATABASE_URL`はローカルDockerを指す設定済みの値のまま）
-4. `.dev.vars.example`を`.dev.vars`にコピーする（ローカルDockerのPostgreSQLを指す設定済みの値のまま。`wrangler dev`はこれでローカルでもHyperdrive経由の接続をシミュレートする）
-5. Neonに`develop`・`main`の2ブランチを用意し、それぞれに`prisma migrate deploy`でスキーマを適用しておく（CIはこの`develop`ブランチから使い捨てブランチを複製してテストを実行する）
-6. GitHubリポジトリのSecrets/Variablesに`NEON_API_KEY`（Secret）・`NEON_PROJECT_ID`（Variable）を登録する（`.github/workflows/back-test.yml`が使用）
+2. `wrangler hyperdrive create <name> --connection-string="<Neon mainブランチの接続文字列>"`を実行し、出力された`id`を`wrangler.jsonc`の`hyperdrive[0].id`（本番用）に設定する
+3. `wrangler hyperdrive create <name> --connection-string="<Neon developブランチの接続文字列>"`を実行し、出力された`id`を`wrangler.jsonc`の`env.develop.hyperdrive[0].id`（ステージング用）に設定する
+4. `docker compose up -d`でローカルPostgreSQLを起動し、`.env.example`を`.env`にコピーする（`DATABASE_URL`はローカルDockerを指す設定済みの値のまま）
+5. `.dev.vars.example`を`.dev.vars`にコピーする（ローカルDockerのPostgreSQLを指す設定済みの値のまま。`wrangler dev`はこれでローカルでもHyperdrive経由の接続をシミュレートする）
+6. Neonに`develop`・`main`の2ブランチを用意し、それぞれに`prisma migrate deploy`でスキーマを適用しておく（CIはこの`develop`ブランチから使い捨てブランチを複製してテストを実行する。ステージングWorker（`env.develop`）も同じ`develop`ブランチのHyperdrive経由でこのスキーマに接続する）
+7. GitHubリポジトリのSecrets/Variablesに`NEON_API_KEY`（Secret）・`NEON_PROJECT_ID`（Variable）を登録する（`.github/workflows/back-test.yml`のテストジョブが使用）
+8. GitHubリポジトリのSecretsに`CLOUDFLARE_API_TOKEN`・`CLOUDFLARE_ACCOUNT_ID`を登録する（`.github/workflows/back-test.yml`のdeployジョブが使用。Workers編集権限を持つAPIトークンを発行すること）
 
 ## アーキテクチャ
 
