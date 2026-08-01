@@ -13,9 +13,10 @@ pnpm dev              # wrangler dev（ローカルでWorkersランタイムを�
 pnpm deploy           # wrangler deploy（Cloudflareへデプロイ）
 pnpm typecheck        # tsc --noEmit
 pnpm test             # vitest run（@cloudflare/vitest-pool-workers、workerd上で実行。DB不要）
-pnpm db:generate      # prisma generate（schema.prisma変更後にクライアント再生成）
-pnpm db:migrate       # prisma migrate dev（マイグレーション作成・適用、DATABASE_URL=ローカルDockerのPostgreSQLに対して実行）
-pnpm db:studio        # prisma studio
+pnpm db:generate       # prisma generate（schema.prisma変更後にクライアント再生成）
+pnpm db:migrate        # prisma migrate dev（新規マイグレーションの作成・適用。ローカルDockerのPostgreSQLに対して実行）
+pnpm db:migrate:deploy # prisma migrate deploy（既存マイグレーションの適用のみ、対話なし。Neonのdevelop/mainなど共有環境向け）
+pnpm db:studio         # prisma studio
 ```
 
 単一のテストファイルのみ実行する場合: `pnpm test src/app.test.ts`
@@ -64,6 +65,15 @@ export type AppType = typeof routes;
 - Prisma 7の新クライアント生成（`generator client { provider = "prisma-client" }`）を使用しており、出力先は`src/generated/prisma`。**あえてsrc配下に生成している**点に注意: 出力先を`src`の外にすると、`tsc`のrootDir推論が`src/`と`generated/`の共通の親をrootDirとみなしてしまい、ビルド出力がネストして壊れる。生成物自体はgit管理対象外（`.gitignore`参照）。Prisma 7既定のESM出力をそのまま使っている（`moduleFormat`は指定しない）。
 - `src/prisma/client.ts`は**シングルトンをexportしていない**。`createPrismaClient(connectionString: string)`というファクトリ関数をexportしており、**各ルートハンドラでリクエストごとに呼び出す**想定（`createPrismaClient(context.env.HYPERDRIVE.connectionString)`）。これはCloudflare公式ドキュメントが明記している必須パターンで、Hyperdrive経由でPrismaClientをグローバルな単一インスタンスとして使い回すと2回目以降のリクエストでハングするバグが報告されているため。Node.jsサーバー時代の`PrismaService`のような起動時`$connect()`は行わない（Workersに「起動」の概念がないため）。
 - 環境ごとのDB接続先は次の通り: ローカル開発 = docker-compose起動のPostgreSQL、CIテスト = Neonの使い捨てブランチ（`develop`から複製）、本番 = Neonの`main`ブランチ。いずれも**アプリのコードは変更不要**で、Hyperdriveのローカル接続文字列（`CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_HYPERDRIVE`）または本番のバインディングIDだけが変わる。
+
+**Neonの`develop`/`main`にマイグレーションを反映する手順**（`db:migrate`＝`migrate dev`ではなく`db:migrate:deploy`＝`migrate deploy`を使うこと。既存のマイグレーションファイルをそのまま当てるだけで、対話も新規ファイル生成もしない）:
+
+1. `prisma/schema.prisma`を編集し、ローカルで`pnpm db:migrate`（`.env`のDATABASE_URL＝ローカルDocker）を実行してマイグレーションファイルを生成・確認する
+2. 生成された`prisma/migrations/`配下のファイルをコミットする
+3. `DATABASE_URL="<Neon developブランチの接続文字列>" pnpm db:migrate:deploy`で`develop`に適用する
+4. 動作確認後、`DATABASE_URL="<Neon mainブランチの接続文字列>" pnpm db:migrate:deploy`で`main`（本番）に適用する
+
+shellで直接`DATABASE_URL`を指定すればdotenvは`.env`の値で上書きしない（すでに設定済みの環境変数は尊重される）ため、`.env`自体を書き換える必要はない。
 
 ### ロギング（pino browserモード）
 
