@@ -1,6 +1,6 @@
 # back
 
-CodeStepのバックエンド。NestJS + Prismaで構築する。
+CodeStepのバックエンド。Hono + Prismaで構築する。
 
 ## セットアップ
 
@@ -11,27 +11,24 @@ $ pnpm install
 ## 起動
 
 ```bash
-# 開発モード
+# 開発モード（ファイル変更を検知して自動再起動）
+$ pnpm run dev
+
+# ビルド
+$ pnpm run build
+
+# 本番モード（要ビルド済み）
 $ pnpm run start
-
-# ウォッチモード
-$ pnpm run start:dev
-
-# 本番モード
-$ pnpm run start:prod
 ```
 
 ## テスト
 
 ```bash
-# ユニットテスト
+# ユニットテスト（DB不要）
 $ pnpm run test
 
 # E2Eテスト
 $ pnpm run test:e2e
-
-# カバレッジ
-$ pnpm run test:cov
 ```
 
 E2Eテストは[Testcontainers](https://node.testcontainers.org/)によりPostgreSQLコンテナを自動起動し、マイグレーション適用後にテストを実行、終了後にコンテナを破棄する。実行にはDockerが起動している必要がある（`docker-compose.yml`のDB起動は不要）。

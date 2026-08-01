@@ -1,6 +1,6 @@
-import { apiClient } from "./client";
+import { apiClient, assertOk } from "./client";
 
 export async function getHello(): Promise<string> {
-  const response = await apiClient.get("");
+  const response = await assertOk(await apiClient.api.$get());
   return response.text();
 }

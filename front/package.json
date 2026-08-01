@@ -15,12 +15,14 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "hono": "^4.12.32",
     "next": "16.2.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "back": "workspace:*",
     "@chromatic-com/storybook": "^5.2.1",
     "@playwright/test": "^1.61.1",
     "@storybook/addon-a11y": "^10.5.3",

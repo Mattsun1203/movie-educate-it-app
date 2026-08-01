@@ -1,5 +1,8 @@
+import type { AppType } from "back";
+import { hc } from "hono/client";
+
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:3000/api";
+  process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:3000";
 
 export class ApiError extends Error {
   readonly status: number;
@@ -11,9 +14,11 @@ export class ApiError extends Error {
   }
 }
 
-async function apiFetch(path: string, init?: RequestInit): Promise<Response> {
-  const response = await fetch(`${API_BASE_URL}${path}`, init);
+export const apiClient = hc<AppType>(API_BASE_URL);
 
+export async function assertOk<
+  T extends { ok: boolean; status: number; statusText: string },
+>(response: T): Promise<T> {
   if (!response.ok) {
     throw new ApiError(
       response.status,
@@ -23,33 +28,3 @@ async function apiFetch(path: string, init?: RequestInit): Promise<Response> {
 
   return response;
 }
-
-function request(
-  method: string,
-  path: string,
-  body?: unknown,
-  init?: RequestInit,
-): Promise<Response> {
-  return apiFetch(path, {
-    ...init,
-    method,
-    headers:
-      body === undefined
-        ? init?.headers
-        : { "Content-Type": "application/json", ...init?.headers },
-    body: body === undefined ? init?.body : JSON.stringify(body),
-  });
-}
-
-export const apiClient = {
-  get: (path: string, init?: RequestInit) =>
-    request("GET", path, undefined, init),
-  post: (path: string, body?: unknown, init?: RequestInit) =>
-    request("POST", path, body, init),
-  put: (path: string, body?: unknown, init?: RequestInit) =>
-    request("PUT", path, body, init),
-  patch: (path: string, body?: unknown, init?: RequestInit) =>
-    request("PATCH", path, body, init),
-  delete: (path: string, init?: RequestInit) =>
-    request("DELETE", path, undefined, init),
-};

@@ -36,22 +36,5 @@
         "organizeImports": "on"
       }
     }
-  },
-  "overrides": [
-    {
-      "includes": ["back/src/**"],
-      "javascript": {
-        "parser": {
-          "unsafeParameterDecoratorsEnabled": true
-        }
-      },
-      "linter": {
-        "rules": {
-          "style": {
-            "useImportType": "off"
-          }
-        }
-      }
-    }
-  ]
+  }
 }

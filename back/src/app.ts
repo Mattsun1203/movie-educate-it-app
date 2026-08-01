@@ -1,0 +1,15 @@
+import { Hono } from "hono";
+import { errorHandler } from "./common/error-handler.js";
+import { type LoggerVariables, loggerMiddleware } from "./logger/middleware.js";
+
+const app = new Hono<{ Variables: LoggerVariables }>().basePath("/api");
+
+app.use("*", loggerMiddleware);
+app.onError(errorHandler);
+
+// Hono RPCの型推論はチェーンされた式でないと正しく蓄積されない。
+// ルートを追加する際も分割せず、必ずこのチェーンに繋げること。
+const routes = app.get("/", (context) => context.text("Hello World!"));
+
+export type AppType = typeof routes;
+export default app;

@@ -12,7 +12,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 本リポジトリはpnpmワークスペースによるモノレポ構成（`pnpm-workspace.yaml`）で、以下の2パッケージからなる。
 
 - `front/` — Next.js 16（App Router）+ React 19 + TypeScriptのフロントエンド。実装済みで稼働中。詳細は`front/CLAUDE.md`を参照。
-- `back/` — 現時点では空。将来のバックエンド用に予約されているディレクトリ。
+- `back/` — Hono + Prisma 7 + PostgreSQLのバックエンド。実装済みで稼働中。詳細は`back/CLAUDE.md`を参照。
 
 ツールのバージョンはmise（`mise.toml`）で固定している: Node 26.5、pnpm 11.15.1（`package.json`の`packageManager`フィールドと必ず一致させること）。
 

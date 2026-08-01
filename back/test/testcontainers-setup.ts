@@ -1,16 +1,18 @@
 import { execSync } from "node:child_process";
 import { PostgreSqlContainer } from "@testcontainers/postgresql";
-import { containerState } from "./postgres-container";
 
-export default async function globalSetup() {
+export default async function setup() {
   const container = await new PostgreSqlContainer("postgres:17-alpine").start();
-  containerState.container = container;
 
   process.env.DATABASE_URL = container.getConnectionUri();
 
   execSync("pnpm exec prisma migrate deploy", {
-    cwd: `${__dirname}/../..`,
+    cwd: `${import.meta.dirname}/..`,
     env: process.env,
     stdio: "inherit",
   });
+
+  return async () => {
+    await container.stop();
+  };
 }
