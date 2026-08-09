@@ -1,11 +1,12 @@
 import type { ErrorHandler } from "hono";
 import { HTTPException } from "hono/http-exception";
 import type { Bindings } from "../app.js";
+import type { AuthVariables } from "../auth/middleware.js";
 import type { LoggerVariables } from "../logger/middleware.js";
 
 export const errorHandler: ErrorHandler<{
   Bindings: Bindings;
-  Variables: LoggerVariables;
+  Variables: LoggerVariables & AuthVariables;
 }> = (err, context) => {
   const status = err instanceof HTTPException ? err.status : 500;
   const level = status >= 500 ? "error" : "warn";

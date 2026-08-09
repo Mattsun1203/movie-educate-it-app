@@ -1,3 +1,8 @@
 # wrangler devがローカル実行時にHyperdrive経由の接続として使う接続文字列。
 # ローカル開発はdocker-compose.ymlのPostgreSQL（`docker compose up -d`）を向ける。
 CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_HYPERDRIVE="postgresql://codestep:codestep@localhost:5434/codestep"
+
+# authアプリ（../auth/apps/auth/api）が発行するaccess token（RS256 JWT）を検証するための公開鍵。
+# authアプリの`JWT_PUBLIC_KEY_BASE64`と同じ鍵ペアの公開鍵側を指定する（PEM文字列をbase64エンコードしたもの）。
+# 本番はwrangler secretで設定し、ここ（.dev.vars）には書かない値を使う。
+JWT_PUBLIC_KEY_BASE64=""
