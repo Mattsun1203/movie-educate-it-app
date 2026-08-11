@@ -12,6 +12,10 @@ export const metadata: Metadata = {
     "フロントエンド学習のコツから業界動向まで、講師陣が執筆する読み物です。",
 };
 
+// searchParams等の動的APIを使わないため、放置するとビルド時に静的プリレンダリングされ
+// microCMSへの実リクエストが発生してしまう。常に最新の記事を出すためリクエスト時レンダリングに固定する。
+export const dynamic = "force-dynamic";
+
 export default async function BlogTopPage() {
   const [{ articles }, categories] = await Promise.all([
     getArticles({ limit: 7 }),
