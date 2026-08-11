@@ -16,13 +16,13 @@
   },
   "dependencies": {
     "hono": "^4.12.32",
+    "microcms-js-sdk": "^3.4.0",
     "next": "16.2.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "back": "workspace:*",
     "@chromatic-com/storybook": "^5.2.1",
     "@cloudflare/workers-types": "^5.20260801.1",
     "@playwright/test": "^1.61.1",
@@ -42,6 +42,7 @@
     "@vitest/browser-playwright": "4.1.10",
     "@vitest/coverage-v8": "4.1.10",
     "@vitest/ui": "^4.1.10",
+    "back": "workspace:*",
     "jsdom": "^29.1.1",
     "msw": "^2.15.0",
     "playwright": "^1.61.1",
