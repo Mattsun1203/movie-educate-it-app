@@ -6,6 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - **CLAUDE向けドキュメント（このファイルを含む）は必ず日本語で記述すること。** コマンドやコード例など英語表記が自然な箇所を除き、説明文は日本語で書く。
 - **コードを編集した後は、作業を終える前に必ずリポジトリルートで`pnpm format`を実行すること。** 本プロジェクトにESLintは存在せず、Biomeが`front/`・`back/`双方の唯一のリンター/フォーマッターである。
+- **新たに使う環境変数は、必ず対応するexampleファイルにも追記すること。** アプリのコードが`process.env.X`のように直接参照する変数だけでなく、`wrangler dev`や`vitest-pool-workers`がバインディング解決のために規約に基づいて読む変数（例: Hyperdriveのローカル接続先を上書きする`CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_<バインディング名>`）も対象に含む。`front/`は`front/.env.example`、`back/`は用途に応じて`back/.env.example`（Prisma CLI操作など、アプリ本体の実行に依存しない用途）または`back/.dev.vars.example`（`wrangler dev`が解決するWorkersランタイムのバインディング）に追記する（使い分けの詳細は`back/CLAUDE.md`を参照）。値は空のままにし、**その環境変数が何のために使われるかをコメントで記載する**こと。
 
 ## リポジトリ構成
 
