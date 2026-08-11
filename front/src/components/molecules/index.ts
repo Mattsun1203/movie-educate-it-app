@@ -3,3 +3,7 @@ export * from "./course-card";
 export * from "./testimonial-card";
 export * from "./faq-item";
 export * from "./lesson-list-item";
+export * from "./article-card";
+export * from "./breadcrumb";
+export * from "./tag-filter";
+export * from "./pagination";
